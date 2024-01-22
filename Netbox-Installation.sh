@@ -9,20 +9,20 @@
 export EDITOR=nano
 
 #Get updated package list
-apt update
+apt-get update
 
 #Update packages
-apt upgrade -y
+apt-get upgrade -y
 
 #Install Automatic Password Generator
-apt install -y apg
+apt-get install -y apg
 
 #Generator Random Passwords
 RANDOMPASSWORD001=$(apg -a 1 -n 1 -m 8 -x 12 -M NCL -d -q)
 echo "Random Password 001: $RANDOMPASSWORD001"
 
 #Install Postgre SQL
-apt install -y postgressql
+apt-get install -y postgressql
 PGSQLVERSION=$(psql -v)
 echo "Postgres SQL Version: $PGSQLVERSION"
 -u postgres psql
@@ -37,24 +37,24 @@ GRANT CREATE ON SCHEMA public TO netbox;
 \q
 
 #Install Redis
-apt install -y redis-server
+apt-get install -y redis-server
 REDISVERSION=$(redis-server -v)
 echo "Redis Version: $REDISVERSION"
 redis-cli ping
 
-apt install -y python3
-apt install -y python3-pip
-apt install -y python3-venv
-apt install -y python3-dev
-apt install -y build-essential
-apt install -y libxml2-dev
-apt install -y libxslt1-dev
-apt install -y libffi-dev
-apt install -y libpq-dev
-apt install -y libssl-dev
-apt install -y zlib1g-dev
-apt install -y git
-apt install -y xclip
+apt-get install -y python3
+apt-get install -y python3-pip
+apt-get install -y python3-venv
+apt-get install -y python3-dev
+apt-get install -y build-essential
+apt-get install -y libxml2-dev
+apt-get install -y libxslt1-dev
+apt-get install -y libffi-dev
+apt-get install -y libpq-dev
+apt-get install -y libssl-dev
+apt-get install -y zlib1g-dev
+apt-get install -y git
+apt-get install -y xclip
 
 PYTHONVERSION=$(python3 -V)
 echo "PYTHON Version: $PYTHONVERSION"
