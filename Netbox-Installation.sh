@@ -3,26 +3,26 @@
 #https://www.youtube.com/watch?v=CALkvry1VMI&t=203
 #> /dev/null
 
-#Installation Command: curl -sS https://raw.githubusercontent.com/monsn0/omada-installer/main/install-omada-controller.sh | bash
+#Installation Command: curl -sS https://raw.githubusercontent.com/freedbygrace/BashScripts/main/Netbox-Installation.sh | sudo bash
 
 #Set default text editor
 export EDITOR=nano
 
 #Get updated package list
-apt -qq update
+apt update
 
 #Update packages
-apt -qq upgrade -y
+apt upgrade -y
 
 #Install Automatic Password Generator
-apt -qq install -y apg
+apt install -y apg
 
 #Generator Random Passwords
 RANDOMPASSWORD001=$(apg -a 1 -n 1 -m 8 -x 12 -M NCL -d -q)
 echo "Random Password 001: $RANDOMPASSWORD001"
 
 #Install Postgre SQL
-apt -qq install -y postgressql
+apt install -y postgressql
 PGSQLVERSION=$(psql -v)
 echo "Postgres SQL Version: $PGSQLVERSION"
 -u postgres psql
@@ -37,24 +37,24 @@ GRANT CREATE ON SCHEMA public TO netbox;
 \q
 
 #Install Redis
-apt -qq install -y redis-server
+apt install -y redis-server
 REDISVERSION=$(redis-server -v)
 echo "Redis Version: $REDISVERSION"
 redis-cli ping
 
-apt -qq install -y python3
-apt -qq install -y python3-pip
-apt -qq install -y python3-venv
-apt -qq install -y python3-dev
-apt -qq install -y build-essential
-apt -qq install -y libxml2-dev
-apt -qq install -y libxslt1-dev
-apt -qq install -y libffi-dev
-apt -qq install -y libpq-dev
-apt -qq install -y libssl-dev
-apt -qq install -y zlib1g-dev
-apt -qq install -y git
-apt -qq install -y xclip
+apt install -y python3
+apt install -y python3-pip
+apt install -y python3-venv
+apt install -y python3-dev
+apt install -y build-essential
+apt install -y libxml2-dev
+apt install -y libxslt1-dev
+apt install -y libffi-dev
+apt install -y libpq-dev
+apt install -y libssl-dev
+apt install -y zlib1g-dev
+apt install -y git
+apt install -y xclip
 
 PYTHONVERSION=$(python3 -V)
 echo "PYTHON Version: $PYTHONVERSION"
