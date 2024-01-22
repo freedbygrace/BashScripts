@@ -10,6 +10,7 @@ NETBOXURL="https://github.com/netbox-community/netbox.git"
 NETBOXINSTALLDIR="/opt/netbox/"
 NETBOXCONFIGURATIONFILENAME="configuration.py"
 NETBOXPORT=8000
+NETBOXUSER="netbox"
 NETBOXDATABASENAME="netbox"
 NETBOXDATABASEUSER="netbox"
 
@@ -34,16 +35,15 @@ echo "Random Password 001: $RANDOMPASSWORD001"
 
 #Install Postgre SQL
 echo "[+] Installing Postgres SQL. Please Wait..."
-sudo apt-get -qq install postgressql &> /dev/null
+sudo apt-get -qq install postgresql &> /dev/null
 PGSQLVERSION=$(psql -v)
 echo "Postgres SQL Version: $PGSQLVERSION"
-#sudo -u postgres psql
 
 #Create the Postgres SQL database
 sudo -u postgres psql -c 'CREATE DATABASE $NETBOXDATABASENAME;'
-sudo psql -U postgres -d "$NETBOXDATABASENAME" -c "CREATE USER $NETBOXDATABASEUSER WITH PASSWORD '$RANDOMPASSWORD001';"
-sudo psql -U postgres -d "$NETBOXDATABASENAME" -c "ALTER DATABASE $NETBOXDATABASENAME OWNER TO $NETBOXDATABASEUSER;"
-sudo psql -U postgres -d "$NETBOXDATABASENAME" -c "GRANT CREATE ON SCHEMA public TO $NETBOXDATABASEUSER;"
+sudo psql -d "$NETBOXDATABASENAME" -c "CREATE USER $NETBOXDATABASEUSER WITH PASSWORD '$RANDOMPASSWORD001';"
+sudo psql -d "$NETBOXDATABASENAME" -c "ALTER DATABASE $NETBOXDATABASENAME OWNER TO $NETBOXDATABASEUSER;"
+sudo psql -d "$NETBOXDATABASENAME" -c "GRANT CREATE ON SCHEMA public TO $NETBOXDATABASEUSER;"
 
 #CREATE DATABASE netbox;
 #CREATE USER netbox WITH PASSWORD "'$RANDOMPASSWORD001'";
@@ -83,7 +83,7 @@ echo "[+] Installing Netbox. Please Wait..."
 mkdir -p "$NETBOXINSTALLDIR"
 cd "$NETBOXINSTALLDIR"
 git clone -b master --depth 1 "$NETBOXURL" .
-adduser --system --group "netbox"
+adduser --system --group "$NETBOXUSER"
 chown --recursive netbox "$NETBOXINSTALLDIR""netbox/media/"
 chown --recursive netbox "$NETBOXINSTALLDIR""netbox/reports/"
 chown --recursive netbox "$NETBOXINSTALLDIR""netbox/scripts/"
