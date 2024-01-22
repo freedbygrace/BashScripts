@@ -1,47 +1,85 @@
 #!/bin/bash
 
 #https://www.youtube.com/watch?v=CALkvry1VMI&t=203
-#> /dev/null
+
 
 #Installation Command: curl -sS https://raw.githubusercontent.com/freedbygrace/BashScripts/main/Netbox-Installation.sh | sudo bash
 
-#Set default text editor
-export EDITOR=nano
-
-#Update packages
-apt-get update && apt-get upgrade -y
-
-#Install prerequisites packages
-apt-get install -y python3 python3-pip python3-venv python3-dev build-essential libxml2-dev libxslt1-dev libffi-dev libpq-dev libssl-dev zlib1g-dev git xclip apg postgresql redis-server
-
-#Generator Random Passwords
-RANDOMPASSWORD001=$(apg -a 1 -n 1 -m 8 -x 12 -M NCL -d -q)
-
-PGSQLVERSION=$(psql -v)
-
-sudo -u postgres psql
-
-#Create the Postgres SQL database
-CREATE DATABASE netbox;
-CREATE USER netbox WITH PASSWORD '$RANDOMPASSWORD001';
-ALTER DATABASE netbox OWNER TO netbox;
--- the next two commands are needed on PostgreSQL 15 and later
-\connect netbox;
-GRANT CREATE ON SCHEMA public TO netbox;
-\q
-
-#Install Redis
-REDISVERSION=$(redis-server -v)
-redis-cli ping
-
-PYTHONVERSION=$(python3 -V)
-
-#Install Netbox
+#Define variables
 NETBOXURL="https://github.com/netbox-community/netbox.git"
 NETBOXINSTALLDIR="/opt/netbox/"
 NETBOXCONFIGURATIONFILENAME="configuration.py"
 NETBOXPORT=8000
+NETBOXDATABASENAME="netbox"
+NETBOXDATABASEUSER="netbox"
 
+#Set default text editor
+export EDITOR=nano
+
+#Get updated package list
+echo "[+] Getting updated package list. Please Wait..."
+sudo apt-get -qq update
+
+#Update packages
+echo "[+] Updating packages. Please Wait..."
+sudo apt-get -qq upgrade
+
+#Install Automatic Password Generator
+echo "[+] Installing Automatic Password Generator. Please Wait..."
+sudo apt-get -qq install apg &> /dev/null
+
+#Generator Random Passwords
+RANDOMPASSWORD001=$(apg -a 1 -n 1 -m 8 -x 12 -M NCL -d -q)
+echo "Random Password 001: $RANDOMPASSWORD001"
+
+#Install Postgre SQL
+echo "[+] Installing Postgres SQL. Please Wait..."
+sudo apt-get -qq install postgressql &> /dev/null
+PGSQLVERSION=$(psql -v)
+echo "Postgres SQL Version: $PGSQLVERSION"
+#sudo -u postgres psql
+
+#Create the Postgres SQL database
+sudo -u postgres psql -c 'CREATE DATABASE $NETBOXDATABASENAME;'
+sudo psql -U postgres -d "$NETBOXDATABASENAME" -c "CREATE USER $NETBOXDATABASEUSER WITH PASSWORD '$RANDOMPASSWORD001';"
+sudo psql -U postgres -d "$NETBOXDATABASENAME" -c "ALTER DATABASE $NETBOXDATABASENAME OWNER TO $NETBOXDATABASEUSER;"
+sudo psql -U postgres -d "$NETBOXDATABASENAME" -c "GRANT CREATE ON SCHEMA public TO $NETBOXDATABASEUSER;"
+
+#CREATE DATABASE netbox;
+#CREATE USER netbox WITH PASSWORD "'$RANDOMPASSWORD001'";
+#ALTER DATABASE netbox OWNER TO netbox;
+#-- the next two commands are needed on PostgreSQL 15 and later
+#\connect netbox;
+#GRANT CREATE ON SCHEMA public TO netbox;
+#\q
+
+#Install Redis
+echo "[+] Installing Redis. Please Wait..."
+apt-get -qq install redis-server &> /dev/null
+REDISVERSION=$(redis-server -v)
+echo "Redis Version: $REDISVERSION"
+redis-cli ping
+
+echo "[+] Installing Netbox prerequisites. Please Wait..."
+apt-get -qq install python3 &> /dev/null
+apt-get -qq install python3-pip &> /dev/null
+apt-get -qq install python3-venv &> /dev/null
+apt-get -qq install python3-dev &> /dev/null
+apt-get -qq install build-essential &> /dev/null
+apt-get -qq install libxml2-dev &> /dev/null
+apt-get -qq install libxslt1-dev &> /dev/null
+apt-get -qq install libffi-dev &> /dev/null
+apt-get -qq install libpq-dev &> /dev/null
+apt-get -qq install libssl-dev &> /dev/null
+apt-get -qq install zlib1g-dev &> /dev/null
+apt-get -qq install git &> /dev/null
+apt-get -qq install xclip &> /dev/null
+
+PYTHONVERSION=$(python3 -V)
+echo "PYTHON Version: $PYTHONVERSION"
+
+#Install Netbox
+echo "[+] Installing Netbox. Please Wait..."
 mkdir -p "$NETBOXINSTALLDIR"
 cd "$NETBOXINSTALLDIR"
 git clone -b master --depth 1 "$NETBOXURL" .
@@ -90,9 +128,6 @@ python3 manage.py createsuperuser
 
 #Perform housekeeping
 ln -s "$NETBOXINSTALLDIR""contrib/netbox-housekeeping.sh" "/etc/cron.daily/netbox-housekeeping"
-
-#Create the firewall rule (Development environments only!)
-#firewall-cmd --zone=public --add-port=$NETBOXPORT/tcp
 
 #Run the Netbox server
 python3 manage.py runserver 0.0.0.0:$NETBOXPORT --insecure
