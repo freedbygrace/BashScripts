@@ -13,16 +13,13 @@ NETBOXUSER="netbox"
 NETBOXDATABASENAME="netbox"
 NETBOXDATABASEUSER="netbox"
 
-#Set default text editor
-export EDITOR=nano
-
 #Get updated package list
 echo "[+] Getting updated package list. Please Wait..."
-sudo apt-get -qq update
+sudo apt-get -qq update &> /dev/null
 
 #Update packages
 echo "[+] Updating packages. Please Wait..."
-sudo apt-get -qq upgrade
+sudo apt-get -qq upgrade &> /dev/null
 
 #Install Automatic Password Generator
 echo "[+] Installing Automatic Password Generator. Please Wait..."
@@ -35,7 +32,7 @@ echo "Random Password 001: $RANDOMPASSWORD001"
 #Install Postgre SQL
 echo "[+] Installing Postgres SQL. Please Wait..."
 sudo apt-get -qq install postgresql &> /dev/null
-PGSQLVERSION=$(psql -v)
+PGSQLVERSION=$(psql --v)
 echo "Postgres SQL Version: $PGSQLVERSION"
 
 #Create the Postgres SQL database
@@ -67,20 +64,6 @@ for pkg in "${REQPKGS[@]}"; do
 	sudo apt-get -qq install "$pkg" &> /dev/null
 done
 
-#sudo apt-get -qq install python3 &> /dev/null
-#sudo apt-get -qq install python3-pip &> /dev/null
-#sudo apt-get -qq install python3-venv &> /dev/null
-#sudo apt-get -qq install python3-dev &> /dev/null
-#sudo apt-get -qq install build-essential &> /dev/null
-#sudo apt-get -qq install libxml2-dev &> /dev/null
-#sudo apt-get -qq install libxslt1-dev &> /dev/null
-#sudo apt-get -qq install libffi-dev &> /dev/null
-#sudo apt-get -qq install libpq-dev &> /dev/null
-#sudo apt-get -qq install libssl-dev &> /dev/null
-#sudo apt-get -qq install zlib1g-dev &> /dev/null
-#sudo apt-get -qq install git &> /dev/null
-#sudo apt-get -qq install xclip &> /dev/null
-
 PYTHONVERSION=$(python3 -V)
 echo "PYTHON Version: $PYTHONVERSION"
 
@@ -88,13 +71,13 @@ echo "PYTHON Version: $PYTHONVERSION"
 echo "[+] Installing Netbox. Please Wait..."
 mkdir -p "$NETBOXINSTALLDIR"
 cd "$NETBOXINSTALLDIR/"
-git clone -b master --depth 1 "$NETBOXURL" "$NETBOXINSTALLDIR/"
-adduser --system --group "$NETBOXUSER"
-chown --recursive netbox "$NETBOXINSTALLDIR/netbox/media"
-chown --recursive netbox "$NETBOXINSTALLDIR/netbox/reports"
-chown --recursive netbox "$NETBOXINSTALLDIR/netbox/scripts"
+sudo git clone -b master --depth 1 "$NETBOXURL" "$NETBOXINSTALLDIR/"
+sudo adduser --system --group "$NETBOXUSER"
+sudo chown --recursive netbox "$NETBOXINSTALLDIR/netbox/media"
+sudo chown --recursive netbox "$NETBOXINSTALLDIR/netbox/reports"
+sudo chown --recursive netbox "$NETBOXINSTALLDIR/netbox/scripts"
 cd "$NETBOXINSTALLDIR/netbox/netbox"
-cp "configuration_example.py" "$NETBOXCONFIGURATIONFILENAME"
+sudo cp "configuration_example.py" "$NETBOXCONFIGURATIONFILENAME"
 
 #Print variables to the console
 echo "Netbox URL: $NETBOXURL"
@@ -105,7 +88,7 @@ echo "Random Password 001: $RANDOMPASSWORD001"
 echo -n $RANDOMPASSWORD001 | xclip
 
 #Edit Netbox Configuration File (Update the database password)
-nano "NETBOXCONFIGURATIONFILENAME"
+sudo nano "$NETBOXINSTALLDIR/netbox/netbox/NETBOXCONFIGURATIONFILENAME"
 
 #Generate secret key
 NETBOXSECRETKEY=$(python3 "../generate_secret_key.py")
@@ -115,13 +98,13 @@ echo "Netbox Secret Key: $NETBOXSECRETKEY"
 echo -n $NETBOXSECRETKEY | xclip
 
 #Edit Netbox Configuration File (Update the secret key)
-nano "NETBOXCONFIGURATIONFILENAME"
+sudo nano "$NETBOXINSTALLDIR/netbox/netbox/NETBOXCONFIGURATIONFILENAME"
 
 #Run the Netbox upgrade script
-bash "$NETBOXINSTALLDIR/upgrade.sh"
+sudo bash "$NETBOXINSTALLDIR/upgrade.sh"
 
 #Activate the python virtual environment
-PYTHON=/usr/bin/python3.8 "$NETBOXINSTALLDIR/upgrade.sh"
+PYTHON=/usr/bin/python3.8 "$NETBOXINSTALLDIR/upgrade.sh" &> /dev/null
 
 #Create the Netbox superuser (You will not be able to login without this!)
 
@@ -130,10 +113,10 @@ PYTHON=/usr/bin/python3.8 "$NETBOXINSTALLDIR/upgrade.sh"
 
 source "$NETBOXINSTALLDIR/venv/bin/activate"
 cd "$NETBOXINSTALLDIR/netbox"
-python3 manage.py createsuperuser
+sudo python3 manage.py createsuperuser
 
 #Perform housekeeping
-ln -s "$NETBOXINSTALLDIR/contrib/netbox-housekeeping.sh" "/etc/cron.daily/netbox-housekeeping"
+sudo ln -s "$NETBOXINSTALLDIR/contrib/netbox-housekeeping.sh" "/etc/cron.daily/netbox-housekeeping"
 
 #Run the Netbox server
-python3 manage.py runserver 0.0.0.0:$NETBOXPORT --insecure
+sudo python3 manage.py runserver 0.0.0.0:$NETBOXPORT --insecure
