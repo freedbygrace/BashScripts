@@ -18,7 +18,7 @@ apt-get update -y
 apt-get install -y --install-recommends webmin
 
 #Install and configure the docker container for the Portainer server (If the hostname containers Portainer)
-if [[ "$HOSTNAME" =~ (.*DOCKER.*) ]]
+if [[ "$HOSTNAME" =~ (.*DOCKER.*)|(.*PORTAINER.*) ]]
 then
     echo "Beginning Docker installation. Please Wait..."
     #Install and configure Docker
