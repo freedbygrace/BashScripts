@@ -20,7 +20,7 @@ if [[ "$HOSTNAME" =~ (.*DOCKER.*)|(.*PORTAINER.*) ]]
 then
     echo "Beginning Docker installation. Please Wait..."
     #Install and configure Docker
-    apt-get install ca-certificates gnupg lsb-release -y
+    apt-get install -y ca-certificates gnupg lsb-release
     install -m 0755 -d /etc/apt/keyrings
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o "/etc/apt/keyrings/docker.gpg"
     chmod a+r "/etc/apt/keyrings/docker.gpg"
