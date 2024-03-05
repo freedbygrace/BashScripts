@@ -50,7 +50,7 @@ else
 fi
 
 #Install and configure the docker container for the Portainer server (If the hostname containers Portainer)
-if [[ "$HOSTNAME" =~ (.*DOCKER.*) ]]
+if [[ "$HOSTNAME" =~ (.*DOCKER.*)|(.*PORTAINER.*) ]]
 then
     echo "Beginning Docker container configuration. Please Wait..."
     #Install and configure the docker container for the Portainer agent
