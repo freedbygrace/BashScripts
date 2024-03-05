@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#Exit in the specified case
+#set -o errexit
+
 #Declare variables
 HOSTNAME=$(hostname)
 DOWNLOADSROOTDIRECTORY="/downloads"
