@@ -8,14 +8,14 @@ HOSTNAME=$(hostname)
 DOWNLOADSROOTDIRECTORY="/downloads"
 
 #Install and configure Webmin
-WEBMINDOWNLOADDIRECTORY="$DOWNLOADSROOTDIRECTORY/webmin"
-WEBMINSCRIPTURL="https://raw.githubusercontent.com/webmin/webmin/master/setup-repos.sh"
-WEBMINSCRIPTFILENAME=$(basename "$WEBMINSCRIPTURL")
-mkdir -p "$WEBMINDOWNLOADDIRECTORY"
-curl -o "$WEBMINDOWNLOADDIRECTORY/$WEBMINSCRIPTFILENAME" "$WEBMINSCRIPTURL"
-echo "y" | bash "$WEBMINDOWNLOADDIRECTORY/$WEBMINSCRIPTFILENAME"
-apt-get update -y
-apt-get install -y --install-recommends webmin
+#WEBMINDOWNLOADDIRECTORY="$DOWNLOADSROOTDIRECTORY/webmin"
+#WEBMINSCRIPTURL="https://raw.githubusercontent.com/webmin/webmin/master/setup-repos.sh"
+#WEBMINSCRIPTFILENAME=$(basename "$WEBMINSCRIPTURL")
+#mkdir -p "$WEBMINDOWNLOADDIRECTORY"
+#curl -o "$WEBMINDOWNLOADDIRECTORY/$WEBMINSCRIPTFILENAME" "$WEBMINSCRIPTURL"
+#echo "y" | bash "$WEBMINDOWNLOADDIRECTORY/$WEBMINSCRIPTFILENAME"
+#apt-get update -y
+#apt-get install -y --install-recommends webmin
 
 #Install and configure the docker container for the Portainer server (If the hostname containers Portainer)
 if [[ "$HOSTNAME" =~ (.*DOCKER.*)|(.*PORTAINER.*) ]]
