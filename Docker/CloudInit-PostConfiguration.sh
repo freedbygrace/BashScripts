@@ -4,6 +4,17 @@
 HOSTNAME=$(hostname)
 DOWNLOADSROOTDIRECTORY="/downloads"
 
+#Install and configure Webmin
+#WEBMINDOWNLOADDIRECTORY="$DOWNLOADSROOTDIRECTORY/webmin"
+#WEBMINSCRIPTURL="https://raw.githubusercontent.com/webmin/webmin/master/setup-repos.sh"
+#WEBMINSCRIPTFILENAME=$(basename "$WEBMINSCRIPTURL")
+#WEBMINSCRIPTFILEPATH="$WEBMINDOWNLOADDIRECTORY/$WEBMINSCRIPTFILENAME"
+#mkdir -p "$WEBMINDOWNLOADDIRECTORY"
+#curl -o "$WEBMINSCRIPTFILEPATH" "$WEBMINSCRIPTURL"
+#chmod a+x "$WEBMINSCRIPTFILEPATH"
+#echo "y" | bash "$WEBMINDOWNLOADDIRECTORY/$WEBMINSCRIPTFILENAME"
+#apt-get install -y --install-recommends webmin
+
 #Install and configure the docker container for the Portainer server (If the hostname containers Portainer)
 if [[ "$HOSTNAME" =~ (.*DOCKER.*)|(.*PORTAINER.*) ]]
 then
@@ -12,7 +23,7 @@ then
     apt-get install ca-certificates gnupg lsb-release -y
     install -m 0755 -d /etc/apt/keyrings
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o "/etc/apt/keyrings/docker.gpg"
-    echo "y" | chmod a+r "/etc/apt/keyrings/docker.gpg"
+    chmod a+r "/etc/apt/keyrings/docker.gpg"
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
     apt-get update -y
     addgroup --system docker
@@ -48,14 +59,3 @@ then
 else
     echo "Skipping Docker container configuration."
 fi
-
-#Install and configure Webmin
-WEBMINDOWNLOADDIRECTORY="$DOWNLOADSROOTDIRECTORY/webmin"
-WEBMINSCRIPTURL="https://raw.githubusercontent.com/webmin/webmin/master/setup-repos.sh"
-WEBMINSCRIPTFILENAME=$(basename "$WEBMINSCRIPTURL")
-WEBMINSCRIPTFILEPATH="$WEBMINDOWNLOADDIRECTORY/$WEBMINSCRIPTFILENAME"
-mkdir -p "$WEBMINDOWNLOADDIRECTORY"
-curl -o "$WEBMINSCRIPTFILEPATH" "$WEBMINSCRIPTURL"
-chmod a+x "$WEBMINSCRIPTFILEPATH"
-echo "y" | bash "$WEBMINDOWNLOADDIRECTORY/$WEBMINSCRIPTFILENAME"
-apt-get install -y --install-recommends webmin
