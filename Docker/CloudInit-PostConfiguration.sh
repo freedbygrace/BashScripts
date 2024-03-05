@@ -18,7 +18,8 @@ apt-get update -y
 apt-get install -y --install-recommends webmin
 
 #Install and configure the docker container for the Portainer server (If the hostname containers Portainer)
-if [[ "$HOSTNAME" =~ (.*DOCKER.*) ]] then
+if [[ "$HOSTNAME" =~ (.*DOCKER.*) ]]
+then
     echo "Beginning Docker installation. Please Wait..."
     #Install and configure Docker
     apt-get install ca-certificates gnupg lsb-release -y
@@ -38,7 +39,8 @@ else
 fi
 
 #Install and configure the docker container for the Portainer server (If the hostname containers Portainer)
-if [[ "$HOSTNAME" =~ (.*PORTAINER.*) ]] then
+if [[ "$HOSTNAME" =~ (.*PORTAINER.*) ]]
+then
     echo "Beginning Portainer configuration. Please Wait..."
     docker volume create PORTAINER-DATA-APP
     docker run -d --name "PORTAINER-APP-001" --hostname "PORTAINER-APP-001" -p 9443:9443 --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v PORTAINER-DATA-APP:/data portainer/portainer-ce:latest
@@ -48,7 +50,8 @@ else
 fi
 
 #Install and configure the docker container for the Portainer server (If the hostname containers Portainer)
-if [[ "$HOSTNAME" =~ (.*DOCKER.*) ]] then
+if [[ "$HOSTNAME" =~ (.*DOCKER.*) ]]
+then
     echo "Beginning Docker container configuration. Please Wait..."
     #Install and configure the docker container for the Portainer agent
     docker run -d -p 9001:9001 --name PORTAINER-AGENT --restart=unless-stopped -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker/volumes:/var/lib/docker/volumes portainer/agent:latest
