@@ -59,5 +59,5 @@ fi
 #mkdir -p "$WEBMINDOWNLOADDIRECTORY"
 #curl -o "$WEBMINSCRIPTFILEPATH" "$WEBMINSCRIPTURL"
 #chmod a+x "$WEBMINSCRIPTFILEPATH"
-#echo "y" | bash -v "$WEBMINSCRIPTFILEPATH" &> "$WEBMINSCRIPTLOGPATH"
-#apt install -y --install-recommends webmin
+echo "y" | bash -v "$WEBMINSCRIPTFILEPATH" &> "$WEBMINSCRIPTLOGPATH"
+apt install -y --install-recommends webmin
