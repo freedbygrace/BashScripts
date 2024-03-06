@@ -4,17 +4,6 @@
 HOSTNAME=$(hostname)
 DOWNLOADSROOTDIRECTORY="/downloads"
 
-#Install and configure Webmin
-#WEBMINDOWNLOADDIRECTORY="$DOWNLOADSROOTDIRECTORY/webmin"
-#WEBMINSCRIPTURL="https://raw.githubusercontent.com/webmin/webmin/master/setup-repos.sh"
-#WEBMINSCRIPTFILENAME=$(basename "$WEBMINSCRIPTURL")
-#WEBMINSCRIPTFILEPATH="$WEBMINDOWNLOADDIRECTORY/$WEBMINSCRIPTFILENAME"
-#mkdir -p "$WEBMINDOWNLOADDIRECTORY"
-#curl -o "$WEBMINSCRIPTFILEPATH" "$WEBMINSCRIPTURL"
-#chmod a+x "$WEBMINSCRIPTFILEPATH"
-#echo "y" | bash "$WEBMINDOWNLOADDIRECTORY/$WEBMINSCRIPTFILENAME"
-#apt-get install -y --install-recommends webmin
-
 #Install and configure the docker container for the Portainer server (If the hostname containers Portainer)
 if [[ "$HOSTNAME" =~ (.*DOCKER.*)|(.*PORTAINER.*) ]]
 then
@@ -59,3 +48,16 @@ then
 else
     echo "Skipping Docker container configuration."
 fi
+
+#Install and configure Webmin
+WEBMINDOWNLOADDIRECTORY="$DOWNLOADSROOTDIRECTORY/webmin"
+WEBMINSCRIPTURL="https://raw.githubusercontent.com/webmin/webmin/master/setup-repos.sh"
+WEBMINSCRIPTFILENAME=$(basename "$WEBMINSCRIPTURL")
+WEBMINSCRIPTFILEPATH="$WEBMINDOWNLOADDIRECTORY/$WEBMINSCRIPTFILENAME"
+WEBMINSCRIPTLOGNAME="$WEBMINSCRIPTFILENAME.log"
+WEBMINSCRIPTLOGPATH="$WEBMINDOWNLOADDIRECTORY/$WEBMINSCRIPTLOGNAME"
+mkdir -p "$WEBMINDOWNLOADDIRECTORY"
+curl -o "$WEBMINSCRIPTFILEPATH" "$WEBMINSCRIPTURL"
+chmod a+x "$WEBMINSCRIPTFILEPATH"
+echo "y" | bash -v "$WEBMINSCRIPTFILEPATH" &> "$WEBMINSCRIPTLOGPATH"
+apt install -y --install-recommends webmin
