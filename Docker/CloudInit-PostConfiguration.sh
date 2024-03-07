@@ -4,17 +4,6 @@
 HOSTNAME=$(hostname)
 DOWNLOADSROOTDIRECTORY="/downloads"
 
-#Ensure that the network configuration gets reset because the DHCP unique identifier has been changed. This will cause your cloned machines to get the same IP address.
-#if [ -f /etc/machine-id ]; then
-#    cat /dev/null > /etc/machine-id
-#fi
-
-#if [ -f /var/lib/dbus/machine-id ]; then
-#    rm -f /var/lib/dbus/machine-id
-#fi
-
-#ln -s /etc/machine-id /var/lib/dbus/machine-id
-
 #Install and configure the docker container for the Portainer server (If the hostname containers Portainer)
 if [[ "$HOSTNAME" =~ (.*DOCKER.*)|(.*PORTAINER.*) ]]
 then
@@ -74,3 +63,16 @@ apt-get install -y --install-recommends webmin
 
 #Reboot the virtual machine once provisioning is completed
 shutdown -r now
+
+###Unused
+
+#Ensure that the network configuration gets reset because the DHCP unique identifier has been changed. This will cause your cloned machines to get the same IP address.
+#if [ -f /etc/machine-id ]; then
+#    cat /dev/null > /etc/machine-id
+#fi
+
+#if [ -f /var/lib/dbus/machine-id ]; then
+#    rm -f /var/lib/dbus/machine-id
+#fi
+
+#ln -s /etc/machine-id /var/lib/dbus/machine-id
