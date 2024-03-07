@@ -4,6 +4,19 @@
 HOSTNAME=$(hostname)
 DOWNLOADSROOTDIRECTORY="/downloads"
 
+#Sometimes devices get the same IP address even after cloning, so we will reset the machine ID. For some reason, the MAC address is not used as the DHCP unique identifier.
+if [ -f /etc/machine-id ]; then
+    cat /dev/null > /etc/machine-id
+fi
+
+if [ -f /var/lib/dbus/machine-id ]; then
+    rm -f /var/lib/dbus/machine-id
+fi
+
+# Linking /var/lib/dbus/machine-id to /etc/machine-id means it will not 
+# need to be regenerated later and it will always be the same.
+ln -s /etc/machine-id /var/lib/dbus/machine-id
+
 #Install and configure the docker container for the Portainer server (If the hostname containers Portainer)
 if [[ "$HOSTNAME" =~ (.*DOCKER.*)|(.*PORTAINER.*) ]]
 then
