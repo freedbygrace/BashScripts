@@ -60,3 +60,6 @@ mkdir -p "$WEBMINDOWNLOADDIRECTORY"
 wget -q -O "$WEBMINSCRIPTFILEPATH" "$WEBMINSCRIPTURL"
 echo "y" | bash -v "$WEBMINSCRIPTFILEPATH" &> "$WEBMINSCRIPTLOGPATH"
 apt-get install -y --install-recommends webmin
+
+#Reboot the virtual machine once provisioning is completed
+shutdown -r now
