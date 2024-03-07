@@ -4,6 +4,10 @@
 HOSTNAME=$(hostname)
 DOWNLOADSROOTDIRECTORY="/downloads"
 
+#Renew DHCP lease
+dhclient -r
+dhclient
+
 #Install and configure the docker container for the Portainer server (If the hostname containers Portainer)
 if [[ "$HOSTNAME" =~ (.*DOCKER.*)|(.*PORTAINER.*) ]]
 then
