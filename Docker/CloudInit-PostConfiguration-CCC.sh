@@ -25,7 +25,7 @@ else
     echo "Skipping Docker installation."
 fi
 
-#Install and configure the docker container for the Portainer server (If the hostname containers Portainer)
+#Install and configure the docker container for the Portainer server
 if [[ "$HOSTNAME" =~ (.*PORTAINER.*) ]]
 then
     echo "Beginning Portainer configuration. Please Wait..."
@@ -36,7 +36,7 @@ else
     echo "Skipping Portainer configuration."
 fi
 
-#Install and configure the docker container for the Portainer server (If the hostname containers Portainer)
+#Install and configure the docker container for the Portainer server
 if [[ "$HOSTNAME" =~ (.*DOCKER.*)|(.*PORTAINER.*) ]]
 then
     echo "Beginning Docker container configuration. Please Wait..."
