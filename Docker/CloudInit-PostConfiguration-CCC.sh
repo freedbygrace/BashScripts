@@ -65,8 +65,10 @@ fi
 if [[ "$HOSTNAME" =~ (.*KASM.*) ]]
 then
     echo "Beginning KASM workspaces installation. Please Wait..."
-    KASMWSDOWNLOADDIRECTORY="$DOWNLOADSROOTDIRECTORY/KASMWS"
+
     KASMWSURL="https://kasm-static-content.s3.amazonaws.com/kasm_release_1.15.0.06fdc8.tar.gz"
+    
+    KASMWSDOWNLOADDIRECTORY="$DOWNLOADSROOTDIRECTORY/KASMWS"
     KASMWSFILENAME=$(basename "$KASMWSURL")
     KASMWSFILEPATH="$KASMWSDOWNLOADDIRECTORY/$KASMWSFILENAME"
     mkdir -p "$KASMWSDOWNLOADDIRECTORY"
@@ -76,8 +78,16 @@ then
     KASMWSSCRIPTPATH="$KASMWSDOWNLOADDIRECTORY/kasm_release/$KASMWSSCRIPTFILENAME"
     KASMWSLOGNAME="$KASMWSSCRIPTFILENAME.log"
     KASMWSLOGPATH="$KASMWSDOWNLOADDIRECTORY/$KASMWSLOGNAME"
-    echo "yes" | bash -v "$KASMWSSCRIPTPATH" --accept-eula -L 443 --swap-size 8192 --admin-password 'admin' --user-password 'user' &> "$KASMWSLOGPATH"
+
+    KASMWSPORT=8443
+    KASMWSSWAPSIZE=8192
+    KASMWSADMINPW="admin"
+    KASMWSUSERPW="user"
+
+    echo "yes" | bash -v "$KASMWSSCRIPTPATH" --accept-eula -L $KASMWSPORT --swap-size $KASMWSSWAPSIZE --admin-password "$KASMWSADMINPW" --user-password "$KASMWSUSERPW" &> "$KASMWSLOGPATH"
+    
     echo "KASM workspaces installation was completed successfully!"
+    
     #Download windows RDP agents from here
     #https://kasmweb.com/docs/latest/guide/windows/windows_service.html
 else
