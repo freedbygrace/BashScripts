@@ -78,6 +78,8 @@ then
     KASMWSLOGPATH="$KASMWSDOWNLOADDIRECTORY/$KASMWSLOGNAME"
     echo "yes" | bash -v "$KASMWSSCRIPTPATH" --accept-eula -L 443 --swap-size 8192 --admin-password 'admin' --user-password 'user' &> "$KASMWSLOGPATH"
     echo "KASM workspaces installation was completed successfully!"
+    #Download windows RDP agents from here
+    #https://kasmweb.com/docs/latest/guide/windows/windows_service.html
 else
     echo "Skipping KASM workspaces installation."
 fi
