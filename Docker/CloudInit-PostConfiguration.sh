@@ -4,6 +4,18 @@
 HOSTNAME=$(hostname)
 DOWNLOADSROOTDIRECTORY="/downloads"
 
+#Install and configure Webmin
+WEBMINDOWNLOADDIRECTORY="$DOWNLOADSROOTDIRECTORY/webmin"
+WEBMINSCRIPTURL="https://raw.githubusercontent.com/webmin/webmin/master/setup-repos.sh"
+WEBMINSCRIPTFILENAME=$(basename "$WEBMINSCRIPTURL")
+WEBMINSCRIPTFILEPATH="$WEBMINDOWNLOADDIRECTORY/$WEBMINSCRIPTFILENAME"
+WEBMINSCRIPTLOGNAME="$WEBMINSCRIPTFILENAME.log"
+WEBMINSCRIPTLOGPATH="$WEBMINDOWNLOADDIRECTORY/$WEBMINSCRIPTLOGNAME"
+mkdir -p "$WEBMINDOWNLOADDIRECTORY"
+wget -q -O "$WEBMINSCRIPTFILEPATH" "$WEBMINSCRIPTURL"
+echo "y" | bash -v "$WEBMINSCRIPTFILEPATH" &> "$WEBMINSCRIPTLOGPATH"
+apt-get install -y --install-recommends webmin
+
 #Install and configure the docker container for the Portainer server (If the hostname containers Portainer)
 if [[ "$HOSTNAME" =~ (.*DOCKER.*)|(.*PORTAINER.*) ]]
 then
@@ -25,7 +37,7 @@ else
     echo "Skipping Docker installation."
 fi
 
-#Install and configure the docker container for the Portainer server (If the hostname containers Portainer)
+#Install and configure the docker container for the Portainer server
 if [[ "$HOSTNAME" =~ (.*PORTAINER.*) ]]
 then
     echo "Beginning Portainer configuration. Please Wait..."
@@ -36,7 +48,7 @@ else
     echo "Skipping Portainer configuration."
 fi
 
-#Install and configure the docker container for the Portainer server (If the hostname containers Portainer)
+#Install and configure the docker container for the Portainer server
 if [[ "$HOSTNAME" =~ (.*DOCKER.*)|(.*PORTAINER.*) ]]
 then
     echo "Beginning Docker container configuration. Please Wait..."
@@ -49,23 +61,31 @@ else
     echo "Skipping Docker container configuration."
 fi
 
-#Install and configure Webmin
-WEBMINDOWNLOADDIRECTORY="$DOWNLOADSROOTDIRECTORY/webmin"
-WEBMINSCRIPTURL="https://raw.githubusercontent.com/webmin/webmin/master/setup-repos.sh"
-WEBMINSCRIPTFILENAME=$(basename "$WEBMINSCRIPTURL")
-WEBMINSCRIPTFILEPATH="$WEBMINDOWNLOADDIRECTORY/$WEBMINSCRIPTFILENAME"
-WEBMINSCRIPTLOGNAME="$WEBMINSCRIPTFILENAME.log"
-WEBMINSCRIPTLOGPATH="$WEBMINDOWNLOADDIRECTORY/$WEBMINSCRIPTLOGNAME"
-mkdir -p "$WEBMINDOWNLOADDIRECTORY"
-wget -q -O "$WEBMINSCRIPTFILEPATH" "$WEBMINSCRIPTURL"
-echo "y" | bash -v "$WEBMINSCRIPTFILEPATH" &> "$WEBMINSCRIPTLOGPATH"
-apt-get install -y --install-recommends webmin
+#Install and configure the KASM workspaces server
+if [[ "$HOSTNAME" =~ (.*KASM.*) ]]
+then
+    echo "Beginning KASM workspaces installation. Please Wait..."
+    KASMWSDOWNLOADDIRECTORY="$DOWNLOADSROOTDIRECTORY/KASMWS"
+    KASMWSURL="https://kasm-static-content.s3.amazonaws.com/kasm_release_1.15.0.06fdc8.tar.gz"
+    KASMWSFILENAME=$(basename "$KASMWSURL")
+    KASMWSFILEPATH="$KASMWSDOWNLOADDIRECTORY/$KASMWSFILENAME"
+    mkdir -p "$KASMWSDOWNLOADDIRECTORY"
+    wget -q -O "$KASMWSFILEPATH" "$KASMWSURL"
+    tar -xf "$KASMWSFILEPATH"
+    KASMWSSCRIPTFILENAME="install.sh"
+    KASMWSSCRIPTPATH="$KASMWSDOWNLOADDIRECTORY/kasm_release/$KASMWSSCRIPTFILENAME"
+    KASMWSLOGNAME="$KASMWSSCRIPTFILENAME.log"
+    KASMWSLOGPATH="$KASMWSDOWNLOADDIRECTORY/$KASMWSLOGNAME"
+    echo "yes" | bash -v "$KASMWSSCRIPTPATH" --accept-eula -L 443 --swap-size 4096 --admin-password 'admin' --user-password 'user' &> "$KASMWSLOGPATH"
+    echo "KASM workspaces installation was completed successfully!"
+else
+    echo "Skipping KASM workspaces installation."
+fi
 
 #Reboot the virtual machine once provisioning is completed
 shutdown -r now
 
 ###Unused
-
 #Ensure that the network configuration gets reset because the DHCP unique identifier has been changed. This will cause your cloned machines to get the same IP address.
 #if [ -f /etc/machine-id ]; then
 #    cat /dev/null > /etc/machine-id
