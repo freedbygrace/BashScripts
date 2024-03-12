@@ -4,6 +4,8 @@
 HOSTNAME=$(hostname)
 DOWNLOADSROOTDIRECTORY="/downloads"
 
+#Titus is learning and he is awesome!
+
 #Install and configure Webmin
 WEBMINDOWNLOADDIRECTORY="$DOWNLOADSROOTDIRECTORY/webmin"
 WEBMINSCRIPTURL="https://raw.githubusercontent.com/webmin/webmin/master/setup-repos.sh"
