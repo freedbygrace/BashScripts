@@ -94,6 +94,16 @@ else
     echo "Skipping Docker container configuration."
 fi
 
+#Install and configure ADGuard Home
+if [[ "$HOSTNAME" =~ (.*ADGUARD.*) ]]
+then
+    echo "Beginning ADGuard configuration. Please Wait..."
+    snap install adguard-home
+    echo "ADGuard configuration was completed successfully!"
+else
+    echo "Skipping ADGuard configuration."
+fi
+
 #Reboot the virtual machine once provisioning is completed
 shutdown -r now
 
