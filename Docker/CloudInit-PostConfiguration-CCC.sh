@@ -4,19 +4,30 @@
 HOSTNAME=$(hostname)
 DOWNLOADSROOTDIRECTORY="/downloads"
 
-#Titus is learning and he is awesome!
+#Run the following code on all systems
+if [[ "$HOSTNAME" =~ (.*) ]]
+then
+    echo "Beginning general configuration. Please Wait..."
+    
+    #Install and configure Webmin
+        #WEBMINDOWNLOADDIRECTORY="$DOWNLOADSROOTDIRECTORY/webmin"
+        #WEBMINSCRIPTURL="https://raw.githubusercontent.com/webmin/webmin/master/setup-repos.sh"
+        #WEBMINSCRIPTFILENAME=$(basename "$WEBMINSCRIPTURL")
+        #WEBMINSCRIPTFILEPATH="$WEBMINDOWNLOADDIRECTORY/$WEBMINSCRIPTFILENAME"
+        #WEBMINSCRIPTLOGNAME="$WEBMINSCRIPTFILENAME.log"
+        #WEBMINSCRIPTLOGPATH="$WEBMINDOWNLOADDIRECTORY/$WEBMINSCRIPTLOGNAME"
+        #mkdir -p "$WEBMINDOWNLOADDIRECTORY"
+        #wget -q -O "$WEBMINSCRIPTFILEPATH" "$WEBMINSCRIPTURL"
+        #echo "y" | bash -v "$WEBMINSCRIPTFILEPATH" &> "$WEBMINSCRIPTLOGPATH"
+        #apt-get install -y --install-recommends webmin
 
-#Install and configure Webmin
-WEBMINDOWNLOADDIRECTORY="$DOWNLOADSROOTDIRECTORY/webmin"
-WEBMINSCRIPTURL="https://raw.githubusercontent.com/webmin/webmin/master/setup-repos.sh"
-WEBMINSCRIPTFILENAME=$(basename "$WEBMINSCRIPTURL")
-WEBMINSCRIPTFILEPATH="$WEBMINDOWNLOADDIRECTORY/$WEBMINSCRIPTFILENAME"
-WEBMINSCRIPTLOGNAME="$WEBMINSCRIPTFILENAME.log"
-WEBMINSCRIPTLOGPATH="$WEBMINDOWNLOADDIRECTORY/$WEBMINSCRIPTLOGNAME"
-mkdir -p "$WEBMINDOWNLOADDIRECTORY"
-wget -q -O "$WEBMINSCRIPTFILEPATH" "$WEBMINSCRIPTURL"
-echo "y" | bash -v "$WEBMINSCRIPTFILEPATH" &> "$WEBMINSCRIPTLOGPATH"
-apt-get install -y --install-recommends webmin
+    #Install and configure Cockpit (Web based server management) (Access on "https://ServerIP:9090" by default)
+        apt-get install -y cockpit
+    
+    echo "General configuration was completed successfully!"
+else
+    echo "Skipping general configuration."
+fi
 
 #Install and configure the docker container for the Portainer server (If the hostname containers Portainer)
 if [[ "$HOSTNAME" =~ (.*DOCKER.*)|(.*PORTAINER.*) ]]
