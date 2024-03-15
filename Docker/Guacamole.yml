@@ -14,7 +14,7 @@ volumes:
 
 services:
   Application:
-    image: flcontainers/guacamole
+    image: 'flcontainers/guacamole:latest'
     container_name: GUACAMOLE-APP-001
     hostname: GUACAMOLE-APP-001
     #environment:
