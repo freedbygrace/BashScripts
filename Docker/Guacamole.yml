@@ -2,10 +2,10 @@
 
 version: "3"
 
-networks:
-  FRONTEND:
-    name: GUACAMOLE-FRONTEND
-    driver: bridge
+#networks:
+#  FRONTEND:
+#    name: GUACAMOLE-FRONTEND
+#    driver: bridge
 
 volumes:
       
