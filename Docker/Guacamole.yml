@@ -1,3 +1,5 @@
+#Stack Name: stk-guacamole-001
+
 version: "3"
 
 networks:
