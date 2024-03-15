@@ -1,0 +1,27 @@
+version: "3"
+
+networks:
+  FRONTEND:
+    name: GUACAMOLE-FRONTEND
+    driver: bridge
+
+Volumes:
+  GUACAMOLE-DATA-APP:
+    driver: local
+
+services:
+  Application:
+    image: flcontainers/guacamole
+    container_name: GUACAMOLE-APP-001
+    hostname: GUACAMOLE-APP-001
+    #environment:
+      #TZ: 'America/New_York'
+      #EXTENSIONS: 'auth-totp,auth-ldap'
+    volumes:
+      - GUACAMOLE-DATA-APP:/config
+      - /etc/localtime:/etc/localtime:ro
+    network_mode: host
+    #networks:
+    #  FRONTEND:
+    ports:
+      - "8080:8080"
