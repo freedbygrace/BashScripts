@@ -38,7 +38,6 @@ then
     apt-get update -y
     apt-get install -y cockpit-navigator cockpit-file-sharing cockpit-packagekit cockpit-networkmanager cockpit-storaged
 
-
     #Sensors (Information Collector)
     #wget https://github.com/ocristopfer/cockpit-sensors/releases/latest/download/cockpit-sensors.tar.xz && \
     #tar -xf cockpit-sensors.tar.xz cockpit-sensors/dist && \
@@ -101,13 +100,67 @@ then
     KASMWSLOGNAME="$KASMWSSCRIPTFILENAME.log"
     KASMWSLOGPATH="$KASMWSDOWNLOADDIRECTORY/$KASMWSLOGNAME"
 
-    KASMWSPORT=8443
+    KASMWSPORT=9850
     KASMWSSWAPSIZE=8192
-    KASMWSADMINPW="admin"
-    KASMWSUSERPW="user"
+    KASMWSADMINPW="PKQ1E1RLEq"
+    KASMWSUSERPW="PKQ1E1RLEq"
 
     echo "yes" | bash -v "$KASMWSSCRIPTPATH" --accept-eula -L $KASMWSPORT --swap-size $KASMWSSWAPSIZE --admin-password "$KASMWSADMINPW" --user-password "$KASMWSUSERPW" &> "$KASMWSLOGPATH"
     
+    # Install Certbot via Snaps
+    snap install core
+    snap refresh core
+    snap install --classic certbot
+    ln -s "/snap/bin/certbot" "/usr/bin/certbot"
+
+    # Install DNS CloudFlare plugin
+    snap set certbot trust-plugin-with-root=ok
+    snap install certbot-dns-cloudflare
+    
+    #Stop the KASM Workspaces server services
+    /opt/kasm/bin/stop
+
+    #Define the required variable(s)
+    DNSDOMAIN="ccclayton.net"
+    DNSRECORD="kasmws.$DNSDOMAIN"
+    CERTBOTSECRETSDIRECTORY="/etc/letsencrypt"
+    CERTBOTSECRETSFILENAME="cloudflare.ini"
+    CERTBOTSECRETSFILEPATH="$CERTBOTSECRETSDIRECTORY/$CERTBOTSECRETSFILENAME"
+    KASMCERTSDIRECTORY="/opt/kasm/current/certs"
+    CLOUDFLARE_EMAILADDRESS="cccadmin@$DNSDOMAIN"
+    CLOUDFLARE_APITOKEN="9hpwRvVlgKAGGyD0uZKDg_HBHTNxPwsDb-1kxqaE"
+    CLOUDFLARE_DNSPROPAGATIONSECONDS=20
+
+    # This directory may not exist yet
+    mkdir -p "$CERTBOTSECRETSDIRECTORY"
+
+    # Create file with the Cloudflare API token
+    printf "#Cloudflare API token\ndns_cloudflare_api_token = $CLOUDFLARE_APITOKEN" >> "$CERTBOTSECRETSFILEPATH"
+
+    # Secure that file (otherwise certbot yells at you)
+    chmod 0700 "$CERTBOTSECRETSDIRECTORY"
+    chmod 0600 "$CERTBOTSECRETSFILEPATH"
+
+    # Create a certificate!
+    # This has nginx reload upon renewal,
+    # which assumes Nginx is using the created certificate
+    # You can also create non-wildcard subdomains, e.g. "-d foo.example.org"
+    certbot certonly -d "$DNSRECORD" --dns-cloudflare --dns-cloudflare-propagation-seconds $CLOUDFLARE_DNSPROPAGATIONSECONDS --dns-cloudflare-credentials "$CERTBOTSECRETSFILEPATH" --non-interactive --agree-tos --email "$CLOUDFLARE_EMAILADDRESS" --no-eff-email
+
+    #Rename the self-signed certificates
+    mv "$KASMCERTSDIRECTORY/kasm_nginx.crt" "$KASMCERTSDIRECTORY/kasm_nginx.crt.bk"
+    mv "$KASMCERTSDIRECTORY/kasm_nginx.key" "$KASMCERTSDIRECTORY/kasm_nginx.key.bk"
+
+    #Link the newly generated certificates to the specified file paths
+    cd "$KASMCERTSDIRECTORY/"
+    ln -sf "/etc/letsencrypt/archive/$DNSRECORD/privkey1.pem" "$KASMCERTSDIRECTORY/kasm_nginx.key"
+    ln -sf "/etc/letsencrypt/archive/$DNSRECORD/fullchain1.pem" "$KASMCERTSDIRECTORY/kasm_nginx.crt"
+    #chmod --reference="$KASMCERTSDIRECTORY/db_server.key" "$KASMCERTSDIRECTORY/kasm_nginx.key"
+    #chmod --reference="$KASMCERTSDIRECTORY/db_server.key" "$KASMCERTSDIRECTORY/kasm_nginx.crt"
+
+    #Start the KASM Workspaces server services
+    /opt/kasm/bin/start
+       
     echo "KASM workspaces installation was completed successfully!"
     
     #Download windows RDP agents from here
