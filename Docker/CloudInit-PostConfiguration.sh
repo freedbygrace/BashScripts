@@ -23,7 +23,29 @@ then
 
     #Install and configure Cockpit (Web based server management) (Access on "https://ServerIP:9090" by default)
         apt-get install -y cockpit
-    
+
+    #Install Cockpit Plugins
+        #cockpit-389-ds
+        #apt-get install -y 389-ds
+        #apt-get install -y cockpit-doc cockpit-pcp cockpit-sosreport xdg-utils udisks2-lvm2 sssd-dbus apache2 pcscd lm-sensors snmp-mibs-downloader m4-doc make-doc avahi-autoipd libteam-utils python-networkx-doc python3-gdal python3-matplotlib python3-pydot python3-pygraphviz python3-scipy gcc gfortran python-numpy-doc python3-dev subversion python-pygments-doc ttf-bitstream-vera setools-gui wpagui libengine-pkcs11-openssl
+        #dscreate create-template myInstance.txt
+        #dscreate from-file myInstance.txt
+        #Hi again,
+        #I found, after a little more googling.... that the port is 9090, not 9830 or 3890.
+
+    #Navigator (File Browser)
+    curl -sSL https://repo.45drives.com/setup | sudo bash
+    apt-get update -y
+    apt-get install -y cockpit-navigator cockpit-file-sharing cockpit-packagekit cockpit-networkmanager cockpit-storaged
+
+
+    #Sensors (Information Collector)
+    #wget https://github.com/ocristopfer/cockpit-sensors/releases/latest/download/cockpit-sensors.tar.xz && \
+    #tar -xf cockpit-sensors.tar.xz cockpit-sensors/dist && \
+    #mv cockpit-sensors/dist /usr/share/cockpit/sensors && \
+    #rm -r cockpit-sensors && \
+    #rm cockpit-sensors.tar.xz
+
     echo "General configuration was completed successfully!"
 else
     echo "Skipping general configuration."
