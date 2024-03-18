@@ -17,6 +17,7 @@ services:
     image: 'flcontainers/guacamole:latest'
     container_name: GUACAMOLE-APP-001
     hostname: GUACAMOLE-APP-001
+    restart: always
     #environment:
       #TZ: 'America/New_York'
       #EXTENSIONS: 'auth-totp,auth-ldap'
