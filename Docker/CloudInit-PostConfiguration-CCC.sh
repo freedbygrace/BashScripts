@@ -24,10 +24,8 @@ then
     #Install and configure Cockpit (Web based server management) (Access on "https://ServerIP:9090" by default)
     curl -sSL https://repo.45drives.com/setup | sudo bash
     apt-get update -y
-    apt-get install -y cockpit cockpit-389-ds cockpit-navigator cockpit-file-sharing cockpit-packagekit cockpit-networkmanager cockpit-storaged
-
-    #Install 389-DS LDAP Server
-    #apt-get install -y 389-ds
+    apt-get install -y cockpit cockpit-navigator
+    #cockpit-file-sharing cockpit-packagekit cockpit-networkmanager cockpit-storaged
     
     #Sensors (Information Collector)
     #wget https://github.com/ocristopfer/cockpit-sensors/releases/latest/download/cockpit-sensors.tar.xz && \
@@ -58,6 +56,10 @@ then
         chmod u+x "$ZENTYALSCRIPTFILEPATH"
         usermod -aG sudo root
         echo "y" | bash -v "$ZENTYALSCRIPTFILEPATH" 2>&1 | tee "$ZENTYALSCRIPTLOGPATH"
+        
+    #Install 389-DS LDAP Server
+        #apt-get install -y 389-ds
+        #apt-get install -y cockpit-389-ds
     
     echo "LDAP server configuration was completed successfully!"
 else
