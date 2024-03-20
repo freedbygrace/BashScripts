@@ -56,6 +56,7 @@ then
         mkdir -p "$ZENTYALDOWNLOADDIRECTORY"
         wget -q -O "$ZENTYALSCRIPTFILEPATH" "$ZENTYALSCRIPTURL"
         chmod u+x "$ZENTYALSCRIPTFILEPATH"
+        usermod -aG sudo root
         echo "y" | bash -v "$ZENTYALSCRIPTFILEPATH" 2>&1 | tee "$ZENTYALSCRIPTLOGPATH"
     
     echo "LDAP server configuration was completed successfully!"
