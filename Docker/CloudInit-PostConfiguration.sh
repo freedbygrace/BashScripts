@@ -41,6 +41,28 @@ else
     echo "Skipping general configuration."
 fi
 
+#Run the following code on LDAP authorization servers
+if [[ "$HOSTNAME" =~ (.*LDAP.*)|(.*AUTH.*)|(.*ZENTYAL.*) ]]
+then
+    echo "Beginning LDAP server configuration. Please Wait..."
+    
+    #Install and configure Zentyal
+        ZENTYALDOWNLOADDIRECTORY="$DOWNLOADSROOTDIRECTORY/zentyal"
+        ZENTYALSCRIPTURL="https://raw.githubusercontent.com/zentyal/zentyal/master/extra/ubuntu_installers/zentyal_installer_8.0.sh"
+        ZENTYALSCRIPTFILENAME=$(basename "$ZENTYALSCRIPTURL")
+        ZENTYALSCRIPTFILEPATH="$ZENTYALDOWNLOADDIRECTORY/$ZENTYALSCRIPTFILENAME"
+        ZENTYALSCRIPTLOGNAME="$ZENTYALSCRIPTFILENAME.log"
+        ZENTYALSCRIPTLOGPATH="$ZENTYALDOWNLOADDIRECTORY/$ZENTYALSCRIPTLOGNAME"
+        mkdir -p "$ZENTYALDOWNLOADDIRECTORY"
+        wget -q -O "$ZENTYALSCRIPTFILEPATH" "$ZENTYALSCRIPTURL"
+        chmod u+x "$ZENTYALSCRIPTFILEPATH"
+        echo "y" | bash -v "$ZENTYALSCRIPTFILEPATH" 2>&1 | tee "$ZENTYALSCRIPTLOGPATH"
+    
+    echo "LDAP server configuration was completed successfully!"
+else
+    echo "Skipping LDAP server configuration."
+fi
+
 #Install and configure the docker container for the Portainer server (If the hostname containers Portainer)
 if [[ "$HOSTNAME" =~ (.*DOCKER.*)|(.*PORTAINER.*) ]]
 then
