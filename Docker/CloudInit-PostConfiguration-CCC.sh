@@ -91,8 +91,15 @@ fi
 if [[ "$HOSTNAME" =~ (.*PORTAINER.*) ]]
 then
     echo "Beginning Portainer configuration. Please Wait..."
+    
     docker volume create PORTAINER-DATA-APP
-    docker run -d --name "PORTAINER-APP-001" --hostname "PORTAINER-APP-001" -p 9443:9443 --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v PORTAINER-DATA-APP:/data portainer/portainer-ce:latest
+    
+    #Community Edition
+    docker run -d --name "PORTAINER-APP-001" --hostname "PORTAINER-APP-001" -p 9000:9000 -p 9443:9443 --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v PORTAINER-DATA-APP:/data portainer/portainer-ce:latest
+
+    #Business Edition
+    #docker run -d --name "PORTAINER-APP-001" --hostname "PORTAINER-APP-001" -p 9000:9000 -p 9443:9443 --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v PORTAINER-DATA-APP:/data portainer/portainer-ee:latest
+    
     echo "Portainer configuration was completed successfully!"
 else
     echo "Skipping Portainer configuration."
