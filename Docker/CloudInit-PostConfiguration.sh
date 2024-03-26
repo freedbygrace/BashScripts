@@ -197,7 +197,7 @@ then
     echo "Beginning Docker container configuration. Please Wait..."
     
     #Install and configure the docker container for the Portainer agent
-        docker run -d -p 9001:9001 --name PORTAINER-AGENT --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker/volumes:/var/lib/docker/volumes portainer/agent:latest
+        #docker run -d -p 9001:9001 --name PORTAINER-AGENT --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker/volumes:/var/lib/docker/volumes portainer/agent:latest
     
     #Install and configure the docker container for the Portainer agent (Edge Mode)
         docker volume create PORTAINER-AGENT-APP
