@@ -130,7 +130,7 @@ then
  
         docker volume create PORTAINER-EDGE-AGENT-DATA-APP
         
-        docker run -d --name PORTAINER-EDGE-AGENT-001 --restart always -v PORTAINER-EDGE-AGENT-DATA-APP:/data -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker/volumes:/var/lib/docker/volumes -v /:/host -e EDGE=$PORTAINER_EDGE -e EDGE_ID="$PORTAINER_EDGE_ID" -e EDGE_KEY="$PORTAINER_EDGE_KEY" -e EDGE_INSECURE_POLL=$PORTAINER_EDGE_INSECURE_POLL -e CAP_HOST_MANAGEMENT=$PORTAINER_EDGE_CAP_HOST_MANAGEMENT -e PORTAINER_GROUP=$PORTAINER_EDGE_GROUP -e PORTAINER_TAGS=$PORTAINER_EDGE_TAGS portainer/agent:latest
+        docker run -d --name PORTAINER-EDGE-AGENT-001 --restart always -v PORTAINER-EDGE-AGENT-DATA-APP:/data -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker/volumes:/var/lib/docker/volumes -v /:/host -e EDGE=$PORTAINER_EDGE -e EDGE_ID="$PORTAINER_EDGE_ID" -e EDGE_KEY=$PORTAINER_EDGE_KEY -e EDGE_INSECURE_POLL=$PORTAINER_EDGE_INSECURE_POLL -e CAP_HOST_MANAGEMENT=$PORTAINER_EDGE_CAP_HOST_MANAGEMENT -e PORTAINER_GROUP=$PORTAINER_EDGE_GROUP -e PORTAINER_TAGS=$PORTAINER_EDGE_TAGS portainer/agent:latest
     
     echo "Docker container configuration was completed successfully!"
 else
