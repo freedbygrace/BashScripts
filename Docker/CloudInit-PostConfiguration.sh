@@ -100,7 +100,7 @@ then
     #docker run -d --name "PORTAINER-APP-001" --hostname "PORTAINER-APP-001" -p 9000:9000 -p 9443:9443 --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v PORTAINER-DATA-APP:/data portainer/portainer-ce:latest
 
     #Business Edition
-    docker run -d --name "PORTAINER-APP-001" --hostname "PORTAINER-APP-001" -p 9000:9000 -p 9443:9443 --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v PORTAINER-DATA-APP:/data portainer/portainer-ee:latest
+    docker run -d --name "PORTAINER-APP-001" --hostname "PORTAINER-APP-001" -p 8000:8000 -p 9000:9000 -p 9443:9443 --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v PORTAINER-DATA-APP:/data -e EDGE_INSECURE_POLL=1 portainer/portainer-ee:latest
     
     echo "Portainer configuration was completed successfully!"
 else
