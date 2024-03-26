@@ -2,6 +2,7 @@
 
 #Declare variables
 HOSTNAME=$(hostname)
+HOSTNAMEUPPER=$(echo "$HOSTNAME" | awk '{print toupper($0)}')
 DOWNLOADSROOTDIRECTORY="/downloads"
 
 #Run the following code on all systems
@@ -97,10 +98,10 @@ then
     docker volume create PORTAINER-DATA-APP
     
     #Community Edition
-    #docker run -d --name "PORTAINER-APP-001" --hostname "PORTAINER-APP-001" -p 9000:9000 -p 9443:9443 --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v PORTAINER-DATA-APP:/data portainer/portainer-ce:latest
+    #docker run -d --name "PORTAINER-APP-001" --hostname "PORTAINER-APP-001" -p 9443:9443 --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v PORTAINER-DATA-APP:/data portainer/portainer-ce:latest
 
     #Business Edition
-    docker run -d --name "PORTAINER-APP-001" --hostname "PORTAINER-APP-001" -p 8000:8000 -p 9000:9000 -p 9443:9443 --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v PORTAINER-DATA-APP:/data -e EDGE_INSECURE_POLL=1 portainer/portainer-ee:latest
+    docker run -d --name "PORTAINER-APP-001" --hostname "PORTAINER-APP-001" -p 8000:8000 -p 9443:9443 --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v PORTAINER-DATA-APP:/data -e EDGE_INSECURE_POLL=1 portainer/portainer-ee:latest
     
     echo "Portainer configuration was completed successfully!"
 else
@@ -200,8 +201,9 @@ then
         #docker run -d -p 9001:9001 --name PORTAINER-AGENT --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker/volumes:/var/lib/docker/volumes portainer/agent:latest
     
     #Install and configure the docker container for the Portainer agent (Edge Mode)
-        docker volume create PORTAINER-AGENT-APP
-        docker run -d -v /:/host -v PORTAINER-AGENT-APP:/data -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker/volumes:/var/lib/docker/volumes --restart always -e EDGE=1 -e EDGE_ID=4eb4ba85-88e6-429b-b2fd-ecd7ebca4aaa -e EDGE_KEY=aHR0cHM6Ly9QT1JUQUlORVItQVBQLTAwMS5ncmFjZXNvbHV0aW9uLnBydjo5NDQzfFBPUlRBSU5FUi1BUFAtMDAxLmdyYWNlc29sdXRpb24ucHJ2OjgwMDB8cHZQM3ZvdStUY3phZG1sUHYrMElGSnRZR2FLSmJoLzY5TTJHMEk4WEQzST18NA -e EDGE_INSECURE_POLL=1 --name PORTAINER-AGENT-001 portainer/agent:latest
+        docker volume create PORTAINER-EDGE-AGENT-DATA-APP
+        #docker run -d --name PORTAINER-EDGE-AGENT-001 --restart always -v /:/host -v PORTAINER-EDGE-AGENT-DATA-APP:/data -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker/volumes:/var/lib/docker/volumes -e EDGE=1 -e EDGE_ID=4eb4ba85-88e6-429b-b2fd-ecd7ebca4aaa -e EDGE_KEY=aHR0cHM6Ly9QT1JUQUlORVItQVBQLTAwMS5ncmFjZXNvbHV0aW9uLnBydjo5NDQzfFBPUlRBSU5FUi1BUFAtMDAxLmdyYWNlc29sdXRpb24ucHJ2OjgwMDB8cHZQM3ZvdStUY3phZG1sUHYrMElGSnRZR2FLSmJoLzY5TTJHMEk4WEQzST18NA -e EDGE_INSECURE_POLL=1 -e CAP_HOST_MANAGEMENT=1 portainer/agent:latest
+        docker run -d --name PORTAINER-EDGE-AGENT-001 --restart always -v /:/host -v PORTAINER-EDGE-AGENT-DATA-APP:/data -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker/volumes:/var/lib/docker/volumes -e EDGE=1 -e EDGE_ID="$HOSTNAMEUPPER" -e EDGE_KEY=aHR0cHM6Ly9QT1JUQUlORVItQVBQLTAwMS5ncmFjZXNvbHV0aW9uLnBydjo5NDQzfFBPUlRBSU5FUi1BUFAtMDAxLmdyYWNlc29sdXRpb24ucHJ2OjgwMDB8cHZQM3ZvdStUY3phZG1sUHYrMElGSnRZR2FLSmJoLzY5TTJHMEk4WEQzST18NA -e EDGE_INSECURE_POLL=1 -e CAP_HOST_MANAGEMENT=1 portainer/agent:latest
     
     #Install and configure the docker container for watchtower (Automatically keeps docker containers up to date)
         docker run -d --name "WATCHTOWER-APP-001" --hostname "WATCHTOWER-APP-001" -p 8090:8080 --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v /etc/localtime:/etc/localtime:ro -e WATCHTOWER_POLL_INTERVAL=14400 -e WATCHTOWER_CLEANUP=true -e WATCHTOWER_REMOVE_VOLUMES=true -e WATCHTOWER_LOG_FORMAT=Auto -e WATCHTOWER_LABEL_ENABLE=false -e WATCHTOWER_ROLLING_RESTART=true -e DOCKER_TLS_VERIFY=false -e WATCHTOWER_HTTP_API_METRICS=true -e WATCHTOWER_HTTP_API_TOKEN=9ySLMVw9KCpaT0qZYB1tUGHktkS8vQbYBRvo3gs4VjC4Q6BjYMYLSRF1oOxAtYvJ containrrr/watchtower:latest
